@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:65238/",
+      "applicationUrl": "https://userregistrations.azurewebsites.net/",
       "sslPort": 44320
     }
   },
