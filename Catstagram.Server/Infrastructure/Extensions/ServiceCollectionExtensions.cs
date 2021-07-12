@@ -1,5 +1,6 @@
 ﻿namespace Catstagram.Server.Infrastructure.Extensions
 {
+    using System;
     using System.Text;
     using Data;
     using Data.Models;
@@ -46,6 +47,8 @@
                     options.Password.RequireLowercase = false;
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireUppercase = false;
+                    options.Lockout.MaxFailedAccessAttempts = 2;
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
                 })
                 .AddEntityFrameworkStores<CatstagramDbContext>();
 

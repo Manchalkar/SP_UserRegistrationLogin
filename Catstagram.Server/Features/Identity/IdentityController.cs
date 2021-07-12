@@ -11,15 +11,18 @@
     public class IdentityController : ApiController
     {
         private readonly UserManager<User> userManager;
+        private readonly SignInManager<User> signInManager;
         private readonly IIdentityService identity;
         private readonly AppSettings appSettings;
 
         public IdentityController(
             UserManager<User> userManager,
+            SignInManager<User> signInManager,
             IIdentityService identity,
             IOptions<AppSettings> appSettings)
         {
             this.userManager = userManager;
+            this.signInManager = signInManager;
             this.identity = identity;
             this.appSettings = appSettings.Value;
         }
@@ -54,12 +57,21 @@
             {
                 return Unauthorized();
             }
+            var Result = await this.signInManager.PasswordSignInAsync(user, model.Password, true, true);
 
-            var passwordValid = await this.userManager.CheckPasswordAsync(user, model.Password);
-            if (!passwordValid)
+            //var passwordValid = await this.userManager.CheckPasswordAsync(user, model.Password);
+            if (!Result.Succeeded)
             {
-                return Unauthorized();
+                if (Result.IsLockedOut)
+                {
+                    throw new System.Exception("User Locked") ;
+                }
+                else
+                {
+                    return Unauthorized();
+                }
             }
+            
 
             var token = this.identity.GenerateJwtToken(
                 user.Id,
